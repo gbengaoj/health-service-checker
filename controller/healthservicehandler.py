@@ -1,15 +1,23 @@
+import os
 import requests, urllib.request, json
+import datetime
 
 class HandleService():
     """Class To Handle Request passed"""
-    service = 'https://google.com'
+
+    service = None
+
+    uptime = None # Uptime For Microservice Availability 
+    downtime = None # Downtime For Microservice Not Available
     output = {
-        'service':service,
-        'message':None
+        'service': service,
+        'message': None,
+        'uptime': uptime,
+        'downtime': downtime
         }
 
     def check_service(self, service):
-        if service is None:
+        if self.service is None:
             self.output['message'] = 'Please Provide Service!'
             return self.output
         else:
@@ -27,3 +35,9 @@ class HandleService():
         elif res_code == 404:
             self.output['message'] = "This Service is Not Found! - Does Not Exist!"
         return return_bool
+
+    def calculate_uptime(self):
+        pass
+
+    def calculate_downtime(self):
+        pass
