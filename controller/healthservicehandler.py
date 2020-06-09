@@ -2,37 +2,60 @@ import os
 import requests, urllib.request, json
 import datetime
 
-class HandleService():
+class HandleService:
     """Class To Handle Request passed"""
 
-    service = None
-
+    all_services = []
     uptime = None # Uptime For Microservice Availability 
     downtime = None # Downtime For Microservice Not Available
+    number_of_services_in_each_microservices = None
+
+    # Result Gotten from each service health check
+    # This would be appended to the result list
     output = {
-        'service': service,
+        'service': None,
         'message': None,
         'uptime': uptime,
         'downtime': downtime
         }
+    result = [
+        
+    ]
 
+    def process_services(self, services):
+        # Get the Number Of Total Service List That is passed to this method
+        count = 0
+        total_service_list = len(services)
+        self.number_of_services_in_each_microservices = total_service_list
+        while count < total_service_list:
+            
+            self.check_service(services[count])
+            count += 1
+        return self.all_services
+
+    
+    # Checks the Service and append the result
     def check_service(self, service):
-        if self.service is None:
+        if service is None:
             self.output['message'] = 'Please Provide Service!'
-            return self.output
+            return self.all_services.append(self.output)
         else:
             self.check_service_status(service)
-            return self.output
+            return self.all_services.append(self.output)
 
-
+    # Check the service status and availabilty
     def check_service_status(self, service):
         return_bool = None
         res = requests.get(service) # get the respond code
         res_code = res.status_code # respond code from service check
         if res_code == 200:
             # Request Response is OK
+            self.output['service'] = service
+            self.output['uptime'] = datetime.datetime.timestamp()
             self.output['message'] = "This Service is Available and Working Fine"
         elif res_code == 404:
+            self.output['service'] = service
+            self.output['uptime'] = datetime.datetime.timestamp()
             self.output['message'] = "This Service is Not Found! - Does Not Exist!"
         return return_bool
 

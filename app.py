@@ -1,7 +1,5 @@
-from controller.healthservicehandler import HandleService
+from healthchecks.services.users import UserService
 
-handler = HandleService()
-
-handler.service = "https://google.com"
-
-print(handler.check_service(handler.service))
+handler = UserService()
+handler.create_service_url()
+print(handler.process_services(handler.services))
