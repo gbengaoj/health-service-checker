@@ -15,6 +15,7 @@ class HandleService:
     output = {
         'service': None,
         'message': None,
+        'status': None,
         'uptime': uptime,
         'downtime': downtime
         }
@@ -51,11 +52,13 @@ class HandleService:
         if res_code == 200:
             # Request Response is OK
             self.output['service'] = service
-            self.output['uptime'] = datetime.datetime.timestamp()
+            self.output['status'] = 'OK'
+            self.output['uptime'] = datetime.datetime.utcnow()
             self.output['message'] = "This Service is Available and Working Fine"
         elif res_code == 404:
             self.output['service'] = service
-            self.output['uptime'] = datetime.datetime.timestamp()
+            self.output['status'] = 'Fail'
+            self.output['uptime'] = datetime.datetime.utcnow()
             self.output['message'] = "This Service is Not Found! - Does Not Exist!"
         return return_bool
 
