@@ -2,38 +2,75 @@ import os
 import requests, urllib.request, json
 import datetime
 
-class HandleService():
+class HandleService:
     """Class To Handle Request passed"""
 
-    service = None
-
+    all_services = []
     uptime = None # Uptime For Microservice Availability 
     downtime = None # Downtime For Microservice Not Available
+    number_of_services_in_each_microservices = None
+
+    # Result Gotten from each service health check
+    # This would be appended to the result list
     output = {
-        'service': service,
+        'service': None,
         'message': None,
+        'status': None,
         'uptime': uptime,
         'downtime': downtime
         }
+    result = [
+        
+    ]
 
+    def process_services(self, services):
+        # Get the Number Of Total Service List That is passed to this method
+        count = 0
+        total_service_list = len(services)
+        self.number_of_services_in_each_microservices = total_service_list
+        while count < total_service_list:
+            count = count
+            self.check_service(services[count])
+            count += 1
+        return self.all_services
+
+    
+    # Checks the Service and append the result
     def check_service(self, service):
-        if self.service is None:
+        if service is None:
             self.output['message'] = 'Please Provide Service!'
-            return self.output
-        else:
-            self.check_service_status(service)
-            return self.output
+            
+        elif self.check_service_status(service):
+            self.output['service'] = service
+            self.output['status'] = 'Online'
+            self.output['uptime'] = datetime.datetime.utcnow()
+            self.output['message'] = "This Service is Available and Working Fine"     
+            self.all_services.append(self.output['service'])
+            self.all_services.append(self.output['status'])
+            self.all_services.append(self.output['uptime'])
+            self.all_services.append(self.output['message'])
+            return self.all_services
+        elif self.check_service_status(service) == False:
+            self.output['service'] = service
+            self.output['status'] = 'Fail'
+            self.output['uptime'] = datetime.datetime.utcnow()
+            self.output['message'] = "This Service is Not Found! - Does Not Exist!"
+            self.all_services.append(self.output['service'])
+            self.all_services.append(self.output['status'])
+            self.all_services.append(self.output['uptime'])
+            self.all_services.append(self.output['message'])
+            return self.all_services
 
-
+    # Check the service status and availabilty
     def check_service_status(self, service):
         return_bool = None
         res = requests.get(service) # get the respond code
         res_code = res.status_code # respond code from service check
         if res_code == 200:
             # Request Response is OK
-            self.output['message'] = "This Service is Available and Working Fine"
+            return_bool = True
         elif res_code == 404:
-            self.output['message'] = "This Service is Not Found! - Does Not Exist!"
+            return_bool = False
         return return_bool
 
     def calculate_uptime(self):

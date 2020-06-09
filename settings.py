@@ -1,3 +1,5 @@
 # Basic Configurations For the Backend To Work with Microservices
 
-server_name = 'microservice.dev'
+auth_server_name = 'https://auth.mobiledev.io/'
+sms_server_name = 'https://sms.mobiledev.io/'
+server_name = 'https://mobiledev.io/'
