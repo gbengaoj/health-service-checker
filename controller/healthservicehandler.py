@@ -42,7 +42,7 @@ class HandleService:
             
         elif self.check_service_status(service):
             self.output['service'] = service
-            self.output['status'] = 'OK'
+            self.output['status'] = 'Online'
             self.output['uptime'] = datetime.datetime.utcnow()
             self.output['message'] = "This Service is Available and Working Fine"     
             self.all_services.append(self.output['service'])
